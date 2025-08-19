@@ -1,7 +1,7 @@
 app_name = "docusign_integration"
 app_title = "Docusign Integration"
 app_publisher = "nithin"
-app_description = "Digital Signature "
+app_description = "Digital Signature"
 app_email = "nithin.m@numocity.com"
 app_license = "mit"
 

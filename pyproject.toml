@@ -3,7 +3,7 @@ name = "docusign_integration"
 authors = [
     { name = "nithin", email = "nithin.m@numocity.com"}
 ]
-description = "Digital Signature "
+description = "Digital Signature"
 requires-python = ">=3.10"
 readme = "README.md"
 dynamic = ["version"]

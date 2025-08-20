@@ -25,7 +25,7 @@
       "label": "Private Key",
       "reqd": 1,
       "show_preview": 1,
-      "description": "The RSA Private Key for JWT authentication"
+      "description": "The RSA Private Key for JWT authentication."
      }
     ],
     "issingle": 1,

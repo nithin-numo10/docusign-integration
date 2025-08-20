@@ -93,13 +93,13 @@ def get_jwt_access_token():
     Retrieves a JWT access token for DocuSign authentication from the DocuSign Settings DocType.
     """
     # Fetch the singleton DocuSign Settings document
+    frappe.log_error(f"private_key:", private_key)
     docusign_settings = frappe.get_cached_doc('DocuSign Settings', 'DocuSign Settings')
 
     private_key = docusign_settings.private_key
     client_id = docusign_settings.client_id
     impersonated_user_guid = docusign_settings.impersonated_user_guid
-    frappe.log_error(f"private_key: {ex}", private_key)
-    frappe.msgprint("private_key", private_key)
+    frappe.log_error(f"private_key is ", private_key)
     if not private_key or not client_id or not impersonated_user_guid:
         frappe.throw("DocuSign credentials not set in DocuSign Settings.")
 

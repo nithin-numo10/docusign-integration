@@ -8,6 +8,7 @@ requires-python = ">=3.10"
 readme = "README.md"
 dynamic = ["version"]
 dependencies = [
+    "docusign-esign>=3.0.0",  # Compatible with 3.0.x
     # "frappe~=15.0.0" # Installed and managed by bench.
 ]
 

@@ -98,6 +98,7 @@ def get_jwt_access_token():
     private_key = docusign_settings.private_key
     client_id = docusign_settings.client_id
     impersonated_user_guid = docusign_settings.impersonated_user_guid
+    frappe.log_error(f"private_key: {ex}", private_key)
     frappe.msgprint("private_key", private_key)
     if not private_key or not client_id or not impersonated_user_guid:
         frappe.throw("DocuSign credentials not set in DocuSign Settings.")

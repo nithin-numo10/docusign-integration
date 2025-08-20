@@ -114,10 +114,10 @@ def get_jwt_access_token():
         "exp": exp,
         "scope": "signature impersonation"
     }
-
+    frappe.log_error(f"access token input payload is ", payload)
     # Encode the JWT
     jwt_token = encode(payload, private_key, algorithm="RS256")
-
+    frappe.log_error(f"access token jwt token ", jwt_token)
     # Request access token
     url = "https://account-d.docusign.com/oauth/token"
     headers = {'Content-Type': 'application/x-www-form-urlencoded'}
@@ -128,8 +128,9 @@ def get_jwt_access_token():
 
     response = requests.post(url, headers=headers, data=body)
     response.raise_for_status()
-
     data = response.json()
+    frappe.log_error(f"access token data", data)
+
     access_token = data.get("access_token")
 
     return access_token, "https://demo.docusign.net/restapi"

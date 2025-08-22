@@ -20,6 +20,13 @@
       "description": "The GUID of the user being impersonated"
      },
      {
+        "fieldname": "docusign_template_id",
+        "fieldtype": "Data",
+        "label": "Template ID",
+        "reqd": 1,
+        "description": "Your DocuSign Template ID"
+       },
+     {
       "fieldname": "private_key",
       "fieldtype": "Long Text",
       "label": "Private Key",

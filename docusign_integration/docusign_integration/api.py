@@ -5,10 +5,12 @@ import time
 import requests
 from datetime import datetime, timedelta
 from jwt import encode, decode
+from PyPDF2 import PdfReader, PdfWriter
+from io import BytesIO
 
 # Frappe framework imports
 import frappe
-from docusign_esign import ApiClient, EnvelopesApi, EnvelopeDefinition
+from docusign_esign import ApiClient, EnvelopesApi, EnvelopeDefinition, TemplatesApi
 from docusign_esign.client.api_exception import ApiException
 from docusign_esign.models import (
     Document,
@@ -19,16 +21,20 @@ from docusign_esign.models import (
     DateSigned,
     Text,
     CustomFields,
-    TextCustomField
+    TextCustomField,
+    CompositeTemplate,
+    ServerTemplate,
+    InlineTemplate,
+    TemplateRole
 )
 
 # Replace with your app's name
 APP_NAME = "docusign_integration"
 
 @frappe.whitelist()
-def send_document_for_signature(doc=None, doctype=None, docname=None):
+def send_document_for_signature(doc=None, doctype=None, docname=None, template_id=None):
     """
-    Sends a document from Frappe to DocuSign for signature.
+    Sends a document from Frappe to DocuSign for signature using a template.
     This function handles calls from both the client-side
     (passing a 'doc' object) and server-side (passing 'doctype' and 'docname').
 
@@ -36,9 +42,10 @@ def send_document_for_signature(doc=None, doctype=None, docname=None):
         doc (frappe.document or str, optional): The Frappe document object or a JSON string. Defaults to None.
         doctype (str, optional): The DocType name. Used if 'doc' is not provided.
         docname (str, optional): The document name. Used if 'doc' is not provided.
+        template_id (str, optional): The DocuSign template ID to be used.
     """
     # Log the start of the function and the received arguments
-    frappe.log_error(f"Starting send_document_for_signature for {doctype} {docname}", "DocuSign Debug")
+    frappe.log_error(f"Starting send_document_for_signature for {doctype} {docname} with template_id {template_id}", "DocuSign Debug")
 
     # Check if the doc argument is a string and parse it as JSON
     if isinstance(doc, str):
@@ -50,23 +57,29 @@ def send_document_for_signature(doc=None, doctype=None, docname=None):
             frappe.throw("A valid document object or a valid doctype and docname must be provided.")
         doc = frappe.get_doc(doc.get('doctype'), doc.get('name'))
 
+    
+
     if not doc.customer_email:
         frappe.throw("Recipient Email is required.")
 
     try:
         # 1. Get the JWT access token and API base path
-        access_token, api_client_base_path = get_jwt_access_token()
+        access_token, api_client_base_path, template_id = get_jwt_access_token()
         frappe.log_error("Successfully retrieved JWT access token.", "DocuSign Debug")
-
+        if not template_id:
+            frappe.throw("DocuSign Template ID is not set in DocuSign Settings.")
         # 2. Get user info and account ID
-        frappe.log_error("access_token: ", access_token)
         user_info = get_user_info(access_token)
-        frappe.log_error("user_info: ", user_info)
         account_id = user_info['accounts'][0]['account_id']
-        frappe.log_error(f"Successfully retrieved account ID: {account_id}", "DocuSign Debug")
 
+
+        api_client = ApiClient(api_client_base_path)
+        api_client.set_default_header("Authorization", "Bearer " + access_token)
+        templates_api = TemplatesApi(api_client)
+
+        envelopes_api = EnvelopesApi(api_client)
         # 3. Create the envelope definition
-        envelope_definition = create_envelope_definition(doc, api_client_base_path)
+        envelope_definition = get_merged_contract_for_signature(doc, template_id, account_id, templates_api, access_token, api_client_base_path)
 
         # 4. Add custom fields to identify the Frappe document in webhooks
         # The webhook events will be configured directly in DocuSign Connect
@@ -93,9 +106,7 @@ def send_document_for_signature(doc=None, doctype=None, docname=None):
         frappe.log_error("Successfully added custom fields to envelope definition.", "DocuSign Debug")
 
         # 5. Send the envelope
-        api_client = ApiClient(api_client_base_path)
-        api_client.set_default_header("Authorization", "Bearer " + access_token)
-        envelopes_api = EnvelopesApi(api_client)
+      
 
         frappe.log_error("Attempting to create and send the envelope.", "DocuSign Debug")
         results = envelopes_api.create_envelope(account_id, envelope_definition=envelope_definition)
@@ -186,9 +197,8 @@ def get_jwt_access_token():
     docusign_settings = frappe.get_cached_doc('DocuSign Settings', 'DocuSign Settings')
     private_key = docusign_settings.private_key
     client_id = docusign_settings.client_id
+    template_id = docusign_settings.docusign_template_id
     impersonated_user_guid = docusign_settings.impersonated_user_guid
-    frappe.log_error(f"private_key:", private_key)
-    frappe.log_error(f"docusign_settings", docusign_settings)
     if not private_key or not client_id or not impersonated_user_guid:
         frappe.throw("DocuSign credentials not set in DocuSign Settings.")
 
@@ -202,9 +212,7 @@ def get_jwt_access_token():
         "exp": exp,
         "scope": "signature impersonation"
     }
-    frappe.log_error(f"access token input payload is ", payload)
     jwt_token = encode(payload, private_key, algorithm="RS256")
-    frappe.log_error(f"access token jwt token ", jwt_token)
     url = "https://account-d.docusign.com/oauth/token"
     headers = {'Content-Type': 'application/x-www-form-urlencoded'}
     body = {
@@ -214,11 +222,10 @@ def get_jwt_access_token():
     response = requests.post(url, headers=headers, data=body)
     response.raise_for_status()
     data = response.json()
-    frappe.log_error(f"access token data", data)
 
     access_token = data.get("access_token")
 
-    return access_token, "https://demo.docusign.net/restapi"
+    return access_token, "https://demo.docusign.net/restapi", template_id
 
 
 def get_user_info(access_token):
@@ -228,57 +235,217 @@ def get_user_info(access_token):
     url = "https://account-d.docusign.com/oauth/userinfo"
     headers = {"Authorization": f"Bearer {access_token}"}
     response = requests.get(url, headers=headers)
-    frappe.log_error(f"Response from user info: {response.status_code}" , "DocuSign Debug")
     response.raise_for_status()
     return response.json()
 
 
-def create_envelope_definition(doc, api_client_base_path):
-    """
-    Creates the DocuSign envelope by generating a PDF from the Frappe document.
 
+
+def merge_pdfs(docusign_pdf_bytes, custom_pdf_bytes):
+    """
+    Merge DocuSign template PDF with your custom PDF
+    """
+    try:
+        # Create PDF readers
+        docusign_reader = PdfReader(BytesIO(docusign_pdf_bytes))
+        custom_reader = PdfReader(BytesIO(custom_pdf_bytes))
+        
+        # Create PDF writer
+        writer = PdfWriter()
+        
+        # Add pages from DocuSign template first
+        for page in docusign_reader.pages:
+            writer.add_page(page)
+        
+        # Add pages from custom PDF
+        for page in custom_reader.pages:
+            writer.add_page(page)
+        
+        # Write to bytes
+        output_buffer = BytesIO()
+        writer.write(output_buffer)
+        
+        merged_pdf_bytes = output_buffer.getvalue()
+        output_buffer.close()
+        
+        return merged_pdf_bytes
+        
+    except Exception as e:
+        frappe.log_error(f"Error merging PDFs: {str(e)}", "PDF Merge Error")
+        return None
+
+
+
+def get_pdf_base64(doc):
+    # Your existing PDF generation logic
+    html = frappe.get_print(doc.doctype, doc.name)
+    pdf = frappe.utils.pdf.get_pdf(html)
+    import base64
+    return base64.b64encode(pdf).decode()
+
+def get_docusign_template_pdf(template_id, account_id, templates_api, access_token, base_path):
+    """
+    Get PDF bytes directly from DocuSign template (much better approach!)
+    """
+    try:
+        # Initialize DocuSign client
+        api_client = ApiClient()
+        api_client.host = "https://demo.docusign.net/restapi"  # or production
+        api_client.set_default_header("Authorization", "Bearer YOUR_ACCESS_TOKEN")
+
+        # Get template info and PDF bytes directly
+        frappe.log_error(f"account ID: {account_id}", "DocuSign Debug")
+    
+        # Get template information
+        template_info = templates_api.get(account_id, template_id)
+        
+
+        # Get the first document from template (usually there's only one)
+        if template_info.documents and len(template_info.documents) > 0:
+            document_id = template_info.documents[0].document_id
+
+            # Get the template PDF bytes directly
+            template_pdf_file = get_template_document(
+                access_token,
+                account_id, 
+                template_id, 
+                document_id,
+                base_path
+            )
+            
+            # Read the bytes
+            template_pdf_bytes = template_pdf_file
+            return template_pdf_bytes
+        else:
+            frappe.log_error("No documents found in template", "DocuSign Template")
+            return None
+            
+    except Exception as e:
+        frappe.log_error(f"Error getting DocuSign template PDF: {str(e)}", "DocuSign Template PDF")
+        return None
+
+
+def get_template_document(access_token, account_id, template_id, document_id, base_path):
+    """
+    Retrieves a single PDF document from a DocuSign template.
+    
     Args:
-        doc (frappe.document): The Frappe document object to be converted to PDF.
+        access_token (str): The bearer access token.
+        account_id (str): The DocuSign account ID.
+        template_id (str): The template ID.
+        document_id (str): The ID of the document within the template.
+    
+    Returns:
+        The content of the document as a bytes object.
     """
-    content_bytes = frappe.get_print(doc.doctype, doc.name, 'Standard', as_pdf=True)
-    base64_file_content = base64.b64encode(content_bytes).decode('utf-8')
+    
+    
+    url = f"{base_path}/v2.1/accounts/{account_id}/templates/{template_id}/documents/{document_id}"
+    
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json"
+    }
 
-    docusign_doc = Document(
-        document_base64=base64_file_content,
-        name=doc.name,
-        file_extension="pdf",
-        document_id="1"
-    )
+    print(f"Making API call to: {url}")
+    
+    try:
+        response = requests.get(url, headers=headers)
 
-    sign_here_tab = SignHere(
-        document_id="1",
-        page_number="1",
-        x_position="100",
-        y_position="100"
-    )
+        response.raise_for_status()  # This will raise an HTTPError if the status is 4xx or 5xx
+        # The response content is the raw PDF file
+        return response.content
+        
+    except requests.exceptions.HTTPError as err:
+        print(f"HTTP Error: {err}")
+        print(f"Response Body: {err.response.text}")
+        return None
+    except Exception as err:
+        print(f"An error occurred: {err}")
+        return None
 
-    date_tab = DateSigned(
-        document_id="1",
-        page_number="1",
-        x_position="200",
-        y_position="100"
-    )
-
-    signer = Signer(
-        email=doc.customer_email,
-        name=doc.customer_name,
-        recipient_id="1",
-        routing_order="1",
-        tabs=Tabs(sign_here_tabs=[sign_here_tab], date_signed_tabs=[date_tab])
-    )
-
-    recipients = Recipients(signers=[signer])
-
-    envelope_definition = EnvelopeDefinition(
-        email_subject="Document for Signature: " + doc.name,
-        documents=[docusign_doc],
-        recipients=recipients,
-        status="sent"
-    )
-
+@frappe.whitelist()
+def get_merged_contract_for_signature(doc, template_id, account_id, templates_api, access_token, base_path):
+    """
+    Send merged PDF for signature (without using template, just as document)
+    """
+    
+    # Get merged PDF
+    merged_pdf_base64 = get_merged_contract_base64(doc, template_id, account_id, templates_api, access_token, base_path)
+    
+    # Create simple envelope with merged PDF
+    envelope_definition = EnvelopeDefinition()
+    envelope_definition.email_subject = f"Contract for {doc.name} - Please Sign"
+    envelope_definition.status = "sent"
+    
+    # Add merged document
+    document = Document()
+    document.document_base64 = merged_pdf_base64
+    document.name = f"Contract_{doc.name}.pdf"
+    document.file_extension = "pdf"
+    document.document_id = "1"
+    
+    envelope_definition.documents = [document]
+    
+    # Add recipient
+    signer = Signer()
+    signer.email = doc.customer_email
+    signer.name = doc.customer_name
+    signer.recipient_id = "1"
+    
+    # Add signature tabs (you'll need to position these)
+    sign_here = SignHere()
+    sign_here.document_id = "1"
+    sign_here.page_number = "1"  # Adjust as needed
+    sign_here.x_position = "400"  # Adjust position
+    sign_here.y_position = "700"  # Adjust position
+    
+    tabs = Tabs()
+    tabs.sign_here_tabs = [sign_here]
+    signer.tabs = tabs
+    
+    envelope_definition.recipients = Recipients(signers=[signer])
+    
     return envelope_definition
+
+def get_merged_contract_base64(doc, template_id, account_id, templates_api,  access_token, base_path):
+    """Get merged PDF as base64 for DocuSign sending"""
+    
+    merged_pdf = create_merged_contract_pdf(doc, template_id, account_id, templates_api,  access_token, base_path)
+    return base64.b64encode(merged_pdf).decode()
+
+
+
+def generate_custom_contract_pdf(doc):
+    """Generate a PDF from the Doctype data"""
+    
+    # Get the Doctype data as a dictionary
+    # data = doc.as_dict()
+    pdf_bytes = frappe.get_print(doc.doctype, doc.name, 'Standard', as_pdf=True)
+    # Generate a PDF from the data
+    # pdf_bytes = frappe.utils.pdf.get_pdf(data)
+    
+    return pdf_bytes
+
+def create_merged_contract_pdf(doc, template_id, account_id, templates_api, access_token, base_path):
+    """
+    Create merged PDF: DocuSign template + Custom contract with amount
+    """
+    
+    # Get DocuSign template PDF directly (much simpler!)
+    docusign_pdf = get_docusign_template_pdf(template_id, account_id, templates_api, access_token, base_path)
+    
+    if not docusign_pdf:
+        frappe.throw("Failed to get DocuSign template PDF")
+    
+    # Generate custom contract PDF
+    custom_pdf = generate_custom_contract_pdf(doc)
+    
+    # Merge PDFs
+    merged_pdf = merge_pdfs(docusign_pdf, custom_pdf)
+    
+    if not merged_pdf:
+        frappe.throw("Failed to merge PDFs")
+    
+    return merged_pdf
+

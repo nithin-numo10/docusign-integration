@@ -388,23 +388,59 @@ def get_merged_contract_for_signature(doc, template_id, account_id, templates_ap
     envelope_definition.documents = [document]
     
     # Add recipient
-    signer = Signer()
-    signer.email = doc.customer_email
-    signer.name = doc.customer_name
-    signer.recipient_id = "1"
-    
+    # signer = Signer()
+    # signer.email = doc.customer_email
+    # signer.name = doc.customer_name
+    # signer.recipient_id = "1"
+
+    sender_signer = Signer(
+    email=doc.supplier_email,  # Or doc.owner_email
+    name=doc.supplier_name,
+    recipient_id="1",
+    routing_order="1"
+    )   
+    frappe.log_error('sender_signer', sender_signer)
+    sender_sign_here = SignHere(
+    document_id="1",
+    page_number="1",  # Different page or same page
+    x_position="400",
+    y_position="700"
+    )
+
+    sender_signer.tabs = Tabs(sign_here_tabs=[sender_sign_here])
+
+    # Receiver
+    receiver_signer = Signer(
+    email=doc.customer_email,
+    name=doc.customer_name,
+    recipient_id="2",
+    routing_order="2"
+    )
+    frappe.log_error('receiver_signer', receiver_signer)
+    receiver_sign_here = SignHere(
+    document_id="1",
+    page_number="2",
+    x_position="400",
+    y_position="700"
+    )   
+
+    receiver_signer.tabs = Tabs(sign_here_tabs=[receiver_sign_here])
+
+    # Add both signers
+    envelope_definition.recipients = Recipients(signers=[receiver_signer, sender_signer])
+
     # Add signature tabs (you'll need to position these)
-    sign_here = SignHere()
-    sign_here.document_id = "1"
-    sign_here.page_number = "1"  # Adjust as needed
-    sign_here.x_position = "400"  # Adjust position
-    sign_here.y_position = "700"  # Adjust position
+    # sign_here = SignHere()
+    # sign_here.document_id = "1"
+    # sign_here.page_number = "1"  # Adjust as needed
+    # sign_here.x_position = "400"  # Adjust position
+    # sign_here.y_position = "700"  # Adjust position
     
-    tabs = Tabs()
-    tabs.sign_here_tabs = [sign_here]
-    signer.tabs = tabs
+    # tabs = Tabs()
+    # tabs.sign_here_tabs = [sign_here]
+    # signer.tabs = tabs
     
-    envelope_definition.recipients = Recipients(signers=[signer])
+    # envelope_definition.recipients = Recipients(signers=[signer])
     
     return envelope_definition
 

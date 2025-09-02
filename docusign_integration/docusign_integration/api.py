@@ -324,7 +324,6 @@ def handle_webhook():
         
         frappe.log_error(f"Successfully updated document {frappe_docname} ({frappe_doctype}) status from '{old_status}' to '{new_status}'", "DocuSign Webhook Success")
         
-
         frappe.response['http_status_code'] = 200
         return {"status": "success", "message": f"Document updated successfully. Status: {new_status}"}
 

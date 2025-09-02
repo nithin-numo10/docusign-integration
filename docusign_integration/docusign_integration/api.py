@@ -130,26 +130,112 @@ def send_document_for_signature(doc=None, doctype=None, docname=None, template_i
         frappe.throw(f"An error occurred: {ex}")
 
 
+# @frappe.whitelist(allow_guest=True)
+# def handle_webhook():
+#     """
+#     Handles incoming webhook notifications from DocuSign.
+#     """
+#     frappe.log_error("DocuSign Webhook received.", "DocuSign Webhook")
+#     try:
+#         data = frappe.form_dict
+#         frappe.log_error(f"Webhook Payload: {data}", "DocuSign Webhook")
+
+#         envelope_id = data.get("envelopeId")
+#         new_status = data.get("status")
+
+#         # Get custom fields from the webhook payload
+#         # Custom fields come in different structures depending on the webhook format
+#         frappe_doctype = None
+#         frappe_docname = None
+        
+#         # Try different possible structures for custom fields
+#         if "customFields" in data:
+#             custom_fields = data.get("customFields", {})
+#             if "textCustomFields" in custom_fields:
+#                 for field in custom_fields["textCustomFields"]:
+#                     if field.get("name") == "frappe_doctype":
+#                         frappe_doctype = field.get("value")
+#                     elif field.get("name") == "frappe_docname":
+#                         frappe_docname = field.get("value")
+        
+#         # Alternative: Direct field access (some webhook formats)
+#         if not frappe_doctype:
+#             frappe_doctype = data.get("frappe_doctype")
+#         if not frappe_docname:
+#             frappe_docname = data.get("frappe_docname")
+
+#         frappe.log_error(f"Extracted: doctype={frappe_doctype}, docname={frappe_docname}, status={new_status}", "DocuSign Webhook")
+
+#         if envelope_id and new_status and frappe_doctype and frappe_docname:
+#             # Find the Frappe document using the dynamic DocType and name
+#             frappe_doc = frappe.get_doc(frappe_doctype, frappe_docname)
+
+#             if frappe_doc:
+#                 frappe_doc.docusign_status = new_status
+#                 frappe_doc.save()
+#                 frappe.db.commit()
+#                 frappe.log_error(f"Updated document {frappe_docname} ({frappe_doctype}) status to: {new_status}", "DocuSign Webhook")
+#             else:
+#                 frappe.log_error(f"No Frappe document found for envelope ID: {envelope_id}", "DocuSign Webhook")
+#         else:
+#             frappe.log_error("Missing required data in webhook payload.", "DocuSign Webhook")
+#             frappe.log_error(f"envelope_id: {envelope_id}, status: {new_status}, doctype: {frappe_doctype}, docname: {frappe_docname}", "DocuSign Webhook")
+
+#         frappe.response['http_status_code'] = 200
+#         return "OK"
+
+#     except Exception as e:
+#         frappe.log_error(f"Error handling DocuSign webhook: {e}", "DocuSign Webhook")
+#         frappe.response['http_status_code'] = 500
+#         return "Error"
+
 @frappe.whitelist(allow_guest=True)
 def handle_webhook():
     """
     Handles incoming webhook notifications from DocuSign.
     """
     frappe.log_error("DocuSign Webhook received.", "DocuSign Webhook")
+    
     try:
-        data = frappe.form_dict
-        frappe.log_error(f"Webhook Payload: {data}", "DocuSign Webhook")
+        # Get the raw request data
+        data = None
+        
+        # Try to get JSON data from request body first
+        if frappe.request and hasattr(frappe.request, 'data'):
+            try:
+                raw_data = frappe.request.data
+                if isinstance(raw_data, bytes):
+                    raw_data = raw_data.decode('utf-8')
+                data = json.loads(raw_data) if raw_data else frappe.form_dict
+            except (json.JSONDecodeError, AttributeError):
+                data = frappe.form_dict
+        else:
+            data = frappe.form_dict
 
-        envelope_id = data.get("envelopeId")
-        new_status = data.get("status")
+        frappe.log_error(f"Webhook Payload: {json.dumps(data, indent=2)}", "DocuSign Webhook")
 
-        # Get custom fields from the webhook payload
-        # Custom fields come in different structures depending on the webhook format
+        # Extract envelope information
+        envelope_id = data.get("envelopeId") or data.get("data", {}).get("envelopeId")
+        new_status = data.get("status") or data.get("data", {}).get("envelopeSummary", {}).get("status")
+        
+        # Initialize variables
         frappe_doctype = None
         frappe_docname = None
         
-        # Try different possible structures for custom fields
-        if "customFields" in data:
+        # Method 1: Try to extract from customFields in the webhook data
+        if "data" in data and "customFields" in data["data"]:
+            custom_fields = data["data"]["customFields"]
+            
+            # Handle textCustomFields array
+            if "textCustomFields" in custom_fields:
+                for field in custom_fields["textCustomFields"]:
+                    if field.get("name") == "frappe_doctype":
+                        frappe_doctype = field.get("value")
+                    elif field.get("name") == "frappe_docname":
+                        frappe_docname = field.get("value")
+        
+        # Method 2: Try direct customFields access
+        elif "customFields" in data:
             custom_fields = data.get("customFields", {})
             if "textCustomFields" in custom_fields:
                 for field in custom_fields["textCustomFields"]:
@@ -158,37 +244,89 @@ def handle_webhook():
                     elif field.get("name") == "frappe_docname":
                         frappe_docname = field.get("value")
         
-        # Alternative: Direct field access (some webhook formats)
+        # Method 3: Direct field access (fallback)
         if not frappe_doctype:
             frappe_doctype = data.get("frappe_doctype")
         if not frappe_docname:
             frappe_docname = data.get("frappe_docname")
+            
+        # Method 4: Try to extract from envelope custom fields if available
+        if not frappe_doctype or not frappe_docname:
+            envelope_data = data.get("data", {}).get("envelopeSummary", {})
+            custom_fields = envelope_data.get("customFields", {})
+            if "textCustomFields" in custom_fields:
+                for field in custom_fields["textCustomFields"]:
+                    if field.get("name") == "frappe_doctype" and not frappe_doctype:
+                        frappe_doctype = field.get("value")
+                    elif field.get("name") == "frappe_docname" and not frappe_docname:
+                        frappe_docname = field.get("value")
 
-        frappe.log_error(f"Extracted: doctype={frappe_doctype}, docname={frappe_docname}, status={new_status}", "DocuSign Webhook")
+        frappe.log_error(f"Extracted: doctype={frappe_doctype}, docname={frappe_docname}, status={new_status}, envelope_id={envelope_id}", "DocuSign Webhook")
 
-        if envelope_id and new_status and frappe_doctype and frappe_docname:
-            # Find the Frappe document using the dynamic DocType and name
-            frappe_doc = frappe.get_doc(frappe_doctype, frappe_docname)
+        # Validate required data
+        if not envelope_id:
+            frappe.log_error("Missing envelope ID in webhook payload.", "DocuSign Webhook Error")
+            frappe.response['http_status_code'] = 400
+            return {"status": "error", "message": "Missing envelope ID"}
 
-            if frappe_doc:
-                frappe_doc.docusign_status = new_status
-                frappe_doc.save()
-                frappe.db.commit()
-                frappe.log_error(f"Updated document {frappe_docname} ({frappe_doctype}) status to: {new_status}", "DocuSign Webhook")
-            else:
-                frappe.log_error(f"No Frappe document found for envelope ID: {envelope_id}", "DocuSign Webhook")
-        else:
-            frappe.log_error("Missing required data in webhook payload.", "DocuSign Webhook")
-            frappe.log_error(f"envelope_id: {envelope_id}, status: {new_status}, doctype: {frappe_doctype}, docname: {frappe_docname}", "DocuSign Webhook")
+        if not new_status:
+            frappe.log_error("Missing status in webhook payload.", "DocuSign Webhook Error")
+            frappe.response['http_status_code'] = 400
+            return {"status": "error", "message": "Missing status"}
+
+        if not frappe_doctype or not frappe_docname:
+            frappe.log_error(f"Missing Frappe document reference. DocType: {frappe_doctype}, DocName: {frappe_docname}", "DocuSign Webhook Error")
+            frappe.response['http_status_code'] = 400
+            return {"status": "error", "message": "Missing Frappe document reference"}
+
+        # Validate DocType exists
+        if not frappe.db.exists("DocType", frappe_doctype):
+            frappe.log_error(f"Invalid DocType: {frappe_doctype}", "DocuSign Webhook Error")
+            frappe.response['http_status_code'] = 400
+            return {"status": "error", "message": f"Invalid DocType: {frappe_doctype}"}
+
+        # Check if document exists
+        if not frappe.db.exists(frappe_doctype, frappe_docname):
+            frappe.log_error(f"Document not found: {frappe_doctype} - {frappe_docname}", "DocuSign Webhook Error")
+            frappe.response['http_status_code'] = 404
+            return {"status": "error", "message": f"Document not found: {frappe_doctype} - {frappe_docname}"}
+
+        # Get and update the Frappe document
+        frappe_doc = frappe.get_doc(frappe_doctype, frappe_docname)
+        
+        # Store old status for comparison
+        old_status = getattr(frappe_doc, 'docusign_status', None)
+        
+        # Update document fields
+        frappe_doc.docusign_status = new_status
+        frappe_doc.docusign_envelope_id = envelope_id
+        
+        # Add timestamp for when status was updated
+        frappe_doc.docusign_last_updated = frappe.utils.now()
+        
+        # Handle specific status changes
+        if new_status.lower() == 'completed':
+            frappe_doc.signature_completed_on = frappe.utils.now()
+            # You might want to trigger additional workflows here
+            
+        elif new_status.lower() == 'declined':
+            frappe_doc.signature_declined_on = frappe.utils.now()
+            
+        elif new_status.lower() == 'voided':
+            frappe_doc.signature_voided_on = frappe.utils.now()
+
+        # Save the document
+        frappe_doc.flags.ignore_permissions = True  # Allow system updates
+        frappe_doc.save()
+        
+        # Commit the transaction
+        frappe.db.commit()
+        
+        frappe.log_error(f"Successfully updated document {frappe_docname} ({frappe_doctype}) status from '{old_status}' to '{new_status}'", "DocuSign Webhook Success")
+        
 
         frappe.response['http_status_code'] = 200
-        return "OK"
-
-    except Exception as e:
-        frappe.log_error(f"Error handling DocuSign webhook: {e}", "DocuSign Webhook")
-        frappe.response['http_status_code'] = 500
-        return "Error"
-
+        return {"status": "success", "message": f"Document updated successfully. Status: {new_status}"}
 
 def get_jwt_access_token():
     """

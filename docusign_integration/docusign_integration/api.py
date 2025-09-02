@@ -327,6 +327,24 @@ def handle_webhook():
         frappe.response['http_status_code'] = 200
         return {"status": "success", "message": f"Document updated successfully. Status: {new_status}"}
 
+    except frappe.DoesNotExistError:
+        error_msg = f"Document not found: {frappe_doctype} - {frappe_docname}"
+        frappe.log_error(error_msg, "DocuSign Webhook Error")
+        frappe.response['http_status_code'] = 404
+        return {"status": "error", "message": error_msg}
+        
+    except frappe.ValidationError as ve:
+        error_msg = f"Validation error updating document: {str(ve)}"
+        frappe.log_error(error_msg, "DocuSign Webhook Error")
+        frappe.response['http_status_code'] = 400
+        return {"status": "error", "message": error_msg}
+        
+    except Exception as e:
+        error_msg = f"Unexpected error handling DocuSign webhook: {str(e)}"
+        frappe.log_error(error_msg, "DocuSign Webhook Error")
+        frappe.response['http_status_code'] = 500
+        return {"status": "error", "message": "Internal server error"}
+
 def get_jwt_access_token():
     """
     Retrieves a JWT access token for DocuSign authentication from the DocuSign Settings DocType.

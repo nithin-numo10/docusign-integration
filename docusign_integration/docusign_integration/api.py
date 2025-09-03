@@ -311,7 +311,6 @@ def handle_webhook():
             
         elif new_status.lower() == 'declined':
             frappe_doc.signature_declined_on = frappe.utils.now()
-            frappe_doc.status = 'Archived'
             
         elif new_status.lower() == 'voided':
             frappe_doc.signature_voided_on = frappe.utils.now()

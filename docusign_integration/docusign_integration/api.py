@@ -527,8 +527,18 @@ def get_merged_contract_for_signature(doc, template_id, account_id, templates_ap
     """
     
     # Get merged PDF
-    merged_pdf_base64 = get_merged_contract_base64(doc, template_id, account_id, templates_api, access_token, base_path)
+    merged_contract = get_merged_contract(doc, template_id, account_id, templates_api, access_token, base_path)
     
+
+    # Access Base64 for DocuSign
+    merged_pdf_base64 = merged_contract["base64"]
+
+    # Get total number of pages (for last page)
+    # Access raw bytes
+    merged_pdf_bytes = merged_contract["bytes"]
+    reader = PdfReader(BytesIO(merged_pdf_bytes))
+    total_pages = len(reader.pages)
+
     # Create simple envelope with merged PDF
     envelope_definition = EnvelopeDefinition()
     envelope_definition.email_subject = f"Contract for {doc.name} - Please Sign"
@@ -558,8 +568,8 @@ def get_merged_contract_for_signature(doc, template_id, account_id, templates_ap
     frappe.log_error('sender_signer', sender_signer)
     sender_sign_here = SignHere(
     document_id="1",
-    page_number="1",  # Different page or same page
-    x_position="400",
+    page_number=str(total_pages), # Different page or same page
+    x_position="50",
     y_position="700"
     )
 
@@ -575,8 +585,8 @@ def get_merged_contract_for_signature(doc, template_id, account_id, templates_ap
     frappe.log_error('receiver_signer', receiver_signer)
     receiver_sign_here = SignHere(
     document_id="1",
-    page_number="2",
-    x_position="400",
+    page_number=str(total_pages),
+    x_position="500",
     y_position="700"
     )   
 
@@ -600,12 +610,21 @@ def get_merged_contract_for_signature(doc, template_id, account_id, templates_ap
     
     return envelope_definition
 
-def get_merged_contract_base64(doc, template_id, account_id, templates_api,  access_token, base_path):
-    """Get merged PDF as base64 for DocuSign sending"""
+# def get_merged_contract_base64(doc, template_id, account_id, templates_api,  access_token, base_path):
+#     """Get merged PDF as base64 for DocuSign sending"""
     
-    merged_pdf = create_merged_contract_pdf(doc, template_id, account_id, templates_api,  access_token, base_path)
-    return base64.b64encode(merged_pdf).decode()
+#     merged_pdf = create_merged_contract_pdf(doc, template_id, account_id, templates_api,  access_token, base_path)
+#     return base64.b64encode(merged_pdf).decode()
 
+def get_merged_contract(doc, template_id, account_id, templates_api, access_token, base_path):
+    """Get merged PDF as both bytes and base64 for DocuSign sending"""
+    
+    merged_pdf_bytes = create_merged_contract_pdf(doc, template_id, account_id, templates_api, access_token, base_path)
+    
+    return {
+        "bytes": merged_pdf_bytes,
+        "base64": base64.b64encode(merged_pdf_bytes).decode()
+    }
 
 
 def generate_custom_contract_pdf(doc):

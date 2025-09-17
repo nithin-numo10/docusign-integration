@@ -33,7 +33,28 @@
       "reqd": 1,
       "show_preview": 1,
       "description": "The RSA Private Key for JWT authentication."
-     }
+     },
+     {
+      "fieldname": "currency",
+      "fieldtype": "Data",
+      "label": "Currency",
+      "reqd": 0,
+      "description": "The currency code for DocuSign transactions (e.g., USD, EUR)."
+    },
+    {
+      "fieldname": "taxid",
+      "fieldtype": "Data",
+      "label": "Tax ID",
+      "reqd": 0,
+      "description": "The tax identification number for billing or compliance."
+    },
+    {
+        "fieldname": "cms_base_url",
+        "fieldtype": "Data",
+        "label": "CMS Base URL",
+        "reqd": 0,
+        "description": "The base URL for the CMS integration with DocuSign (e.g., API or redirect URL)."
+    }
     ],
     "issingle": 1,
     "module": "Docusign Integration",

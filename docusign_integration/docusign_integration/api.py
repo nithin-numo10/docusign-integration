@@ -130,6 +130,126 @@ def send_document_for_signature(doc=None, doctype=None, docname=None, template_i
         frappe.throw(f"An error occurred: {ex}")
 
 
+
+@frappe.whitelist(allow_guest=True)
+def download_docusign_document(envelope_id):
+    """
+    Downloads a DocuSign document by its envelope ID and saves it to Frappe File doctype.
+    
+    Args:
+        envelope_id (str): The DocuSign envelope ID.
+        
+    Returns:
+        Returns file_url in frappe.response['message'] for client-side download.
+    """
+    try:
+        # Validate envelope_id
+        if not envelope_id:
+            raise ValueError("Envelope ID is required")
+
+        # Get access token, API base path, and template ID
+        jwt_response = get_jwt_access_token()
+
+        # Unpack the three values
+        if isinstance(jwt_response, tuple) and len(jwt_response) == 3:
+            access_token, api_client_base_path, template_id = jwt_response
+        else:
+            raise ValueError(f"Expected 3 values from get_jwt_access_token, got {len(jwt_response) if isinstance(jwt_response, tuple) else 'non-tuple response'}")
+
+        if not access_token:
+            raise ValueError("Access token is empty or invalid")
+
+        # Get user info
+        user_info = get_user_info(access_token)
+        if not user_info.get('accounts'):
+            raise ValueError("No accounts found in user_info response")
+        account_id = user_info['accounts'][0]['account_id']
+        base_uri = user_info['accounts'][0].get('base_uri', api_client_base_path)
+
+        # Initialize DocuSign API client
+        api_client = ApiClient(base_uri + "/restapi")
+        api_client.set_default_header("Authorization", f"Bearer {access_token}")
+        envelopes_api = EnvelopesApi(api_client)
+
+        # Get list of documents in the envelope
+        document_list = envelopes_api.list_documents(account_id, envelope_id)
+        
+        # Check for envelope_documents
+        if not hasattr(document_list, 'envelope_documents') or not document_list.envelope_documents:
+            frappe.throw("No documents found in the envelope.", frappe.DoesNotExistError)
+
+        # Try downloading the combined document
+        document_id = 'combined'
+        pdf_data = None
+        try:
+            pdf_data = envelopes_api.get_document(
+                account_id=account_id,
+                envelope_id=envelope_id,
+                document_id=document_id,
+                certificate=False
+            )
+        except Exception as e:
+            frappe.log_error(f"Combined document failed: {str(e)}", "DocuSign Debug")
+            # Fallback to first document
+            document_id = document_list.envelope_documents[0].document_id
+            frappe.log_error(f"Falling back to document ID: {document_id}", "DocuSign Debug")
+            pdf_data = envelopes_api.get_document(
+                account_id=account_id,
+                envelope_id=envelope_id,
+                document_id=document_id,
+                certificate=False
+            )
+
+        # Log PDF data details
+        if pdf_data is None:
+            frappe.log_error("No PDF data retrieved", "DocuSign Error")
+            frappe.throw("Failed to retrieve document data", frappe.DataError)
+        
+        # Ensure pdf_data is a byte stream
+        if isinstance(pdf_data, BytesIO):
+            pdf_data.seek(0)
+            pdf_content = pdf_data.read()
+        else:
+            pdf_content = pdf_data
+
+        # Verify pdf_content is not empty
+        if not pdf_content or len(pdf_content) == 0:
+            frappe.log_error("PDF content is empty", "DocuSign Error")
+            frappe.throw("Failed to download document: Empty content received", frappe.DataError)
+
+        # Save file to Frappe File doctype
+        filename = f"docusign_signed_{envelope_id}_{document_id}.pdf"
+        file_doc = None
+        try:
+            file_doc = frappe.get_doc({
+                "doctype": "File",
+                "file_name": filename,
+                "content": pdf_content,
+                "is_private": 1,
+                "attached_to_doctype": "Contract",
+                "attached_to_name": frappe.form_dict.get('name') or "CON-00001"
+            })
+            file_doc.save()
+            frappe.log_error(f"File saved: {file_doc.file_url}", "DocuSign Debug")
+        except Exception as e:
+            frappe.log_error(f"Failed to save file: {str(e)}", "DocuSign Error")
+            frappe.throw(f"Failed to save file: {str(e)}", frappe.DataError)
+
+        # Set Frappe response
+        frappe.log_error(f"Returning file URL: {file_doc.file_url}", "DocuSign Debug")
+        frappe.response['message'] = {
+            "filename": filename,
+            "file_url": file_doc.file_url
+        }
+
+    except requests.exceptions.HTTPError as err:
+        error_msg = f"DocuSign API Error: {str(err)}"
+        frappe.log_error(error_msg, "DocuSign Error")
+        frappe.throw(f"Error downloading document: {err}", frappe.DoesNotExistError)
+    except Exception as e:
+        error_msg = f"Unexpected error: {str(e)}"
+        frappe.log_error(error_msg, "DocuSign Error")
+        frappe.throw(f"An unexpected error occurred: {str(e)}")
 # @frappe.whitelist(allow_guest=True)
 # def handle_webhook():
 #     """
@@ -383,17 +503,31 @@ def get_jwt_access_token():
     return access_token, "https://demo.docusign.net/restapi", template_id
 
 
+# def get_user_info(access_token):
+#     """
+#     Retrieves the user's account information using the access token.
+#     """
+#     url = "https://account-d.docusign.com/oauth/userinfo"
+#     headers = {"Authorization": f"Bearer {access_token}"}
+#     response = requests.get(url, headers=headers)
+#     response.raise_for_status()
+#     return response.json()
+
 def get_user_info(access_token):
     """
     Retrieves the user's account information using the access token.
     """
-    url = "https://account-d.docusign.com/oauth/userinfo"
-    headers = {"Authorization": f"Bearer {access_token}"}
-    response = requests.get(url, headers=headers)
-    response.raise_for_status()
-    return response.json()
-
-
+    try:
+        url = "https://account-d.docusign.com/oauth/userinfo"
+        headers = {"Authorization": f"Bearer {access_token}"}
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+        user_info = response.json()
+        return user_info
+    except Exception as e:
+        error_msg = f"Failed to get user info: {str(e)}"
+        frappe.log_error(error_msg, "DocuSign Download Failed")
+        raise ValueError(error_msg)
 
 
 def merge_pdfs(docusign_pdf_bytes, custom_pdf_bytes):
@@ -658,4 +792,129 @@ def create_merged_contract_pdf(doc, template_id, account_id, templates_api, acce
         frappe.throw("Failed to merge PDFs")
     
     return merged_pdf
+
+
+
+@frappe.whitelist()
+def fetch_groups():
+    try:
+        docusign_settings = frappe.get_cached_doc('DocuSign Settings', 'DocuSign Settings')
+        base_url = docusign_settings.cms_base_url.rstrip("/")
+        group_fetch_url = f"{base_url}/npmasset/api/group?assetKind=groups&numotype=ocpp"
+        resp = requests.get(group_fetch_url, timeout=10)
+        resp.raise_for_status()
+        data = resp.json()
+    except requests.exceptions.RequestException as e:
+        frappe.log_error(f"Group fetch failed: {str(e)}")
+        return []
+
+    # Return list of dicts with both name & identifier
+    return [{"name": d.get("name"), "identifier": d.get("identifier")} for d in data]
+
+
+
+@frappe.whitelist()
+def send_tariff(contract_id):
+    """Send tariff for a Contract to CMS and add rule"""
+
+    # Load Contract doc
+    doc = frappe.get_doc("Contract", contract_id)
+
+    # Load settings from DocuSign Settings doctype
+    # docusign_settings = frappe.get_single("DocuSign Settings")
+    docusign_settings = frappe.get_cached_doc('DocuSign Settings', 'DocuSign Settings')
+
+    base_url = docusign_settings.cms_base_url.rstrip("/")
+    headers = {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+    }
+
+    # -----------------------------
+    # 1️⃣ Create new tariff
+    # -----------------------------
+    tariff_payload = {
+        "name": f"{doc.contract_title}-tariff_001",
+        "taxId": docusign_settings.taxid,
+        "services": [
+            {
+                "type": "energyInkWh",
+                "rate": doc.tariff_per_kwh
+            }
+        ],
+        "currencyType": docusign_settings.currency,
+        "numotype": "ocpp"
+    }
+
+    create_url = f"{base_url}/tariff/api/tariff"
+    create_resp = requests.post(create_url, json=tariff_payload, headers=headers)
+
+    if create_resp.status_code != 200:
+        frappe.throw(f"Error creating tariff: {create_resp.text}")
+
+    create_data = create_resp.json()
+    tariff_id = create_data.get("identifier")
+    if not tariff_id:
+        frappe.throw("Tariff identifier not returned from CMS.")
+
+    # Save to Contract
+    doc.cms_tariff_id = tariff_id
+    doc.save(ignore_permissions=True)
+
+    # -----------------------------
+    # 2️⃣ Get existing rules
+    # -----------------------------
+    rules_url = f"{base_url}/tariff/api/tariff_rules"
+    params = {"numotype": "ocpp"}
+
+    rules_resp = requests.get(rules_url, params=params, headers=headers)
+
+    if rules_resp.status_code != 200:
+        frappe.log_error(rules_resp.text, "Fetch Rules Failed")
+        frappe.throw(f"Error fetching tariff rules: {rules_resp.text}")
+
+    # CMS returns either a single object or list; handle both
+    rules_json = rules_resp.json()
+
+    if isinstance(rules_json, list) and rules_json:
+        # take the first element if it's a list
+        rules_data = rules_json[0]
+    else:
+        rules_data = rules_json
+
+
+    # Ensure it has keys we need
+    numotype = rules_data.get("numotype", "ocpp")
+    identifier = rules_data.get("identifier") or frappe.generate_hash()
+    rules_list = rules_data.get("rules", [])
+
+    # 3️⃣ Build new rule
+    new_rule = {
+        "accountType": "group",
+        "groupId": [doc.group_id],  # ensure this field matches your doctype
+        "tariffId": tariff_id,
+        "groupName": doc.group_name,
+        "tariffName": f"{doc.contract_title}tariff"
+    }
+    frappe.log_error(f"New rule to insert: {json.dumps(new_rule, indent=2)}", "send_tariff")
+
+    # Insert at start of rules
+    rules_list.insert(0, new_rule)
+
+    # Build final payload in CMS format
+    final_payload = {
+        "numotype": numotype,
+        "rules": rules_list,
+        "identifier": identifier
+    }
+
+    # 4️⃣ Push updated rules back
+    push_url = f"{base_url}/tariff/api/tariff_rules"
+    frappe.log_error(f"Posting updated rules to {push_url}", "send_tariff")
+    push_resp = requests.post(push_url, json=final_payload, headers=headers)
+    frappe.log_error(f"Rules POST response code={push_resp.status_code}, body={push_resp.text}", "send_tariff")
+
+    if push_resp.status_code != 200:
+        frappe.log_error(push_resp.text, "Push Rules Failed")
+        frappe.throw(f"Error posting updated rules: {push_resp.text}")
 

@@ -54,7 +54,14 @@
         "label": "CMS Base URL",
         "reqd": 0,
         "description": "The base URL for the CMS integration with DocuSign (e.g., API or redirect URL)."
-    }
+    },
+    {
+     "fieldname": "cms_api_key",
+     "fieldtype": "Data",
+     "label": "CMS API Key",
+     "reqd": 0,
+     "description": "The currency code for DocuSign transactions (e.g., USD, EUR)."
+   }
     ],
     "issingle": 1,
     "module": "Docusign Integration",

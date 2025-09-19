@@ -800,8 +800,15 @@ def fetch_groups():
     try:
         docusign_settings = frappe.get_cached_doc('DocuSign Settings', 'DocuSign Settings')
         base_url = docusign_settings.cms_base_url.rstrip("/")
-        group_fetch_url = f"{base_url}/npmasset/api/group?assetKind=groups&numotype=ocpp"
-        resp = requests.get(group_fetch_url, timeout=10)
+        group_fetch_url = f"{base_url}/frappeasset/api/group?assetKind=groups&numotype=ocpp"
+        # pull your API key from settings (add a Password field `cms_api_key` if not yet present)
+        api_key = docusign_settings.cms_api_key  
+
+        headers = {
+            "x-api-key": api_key,           # <<— the header your API expects
+            "Accept": "application/json"
+        }
+        resp = requests.get(group_fetch_url, headers=headers, timeout=10)
         resp.raise_for_status()
         data = resp.json()
     except requests.exceptions.RequestException as e:
@@ -818,23 +825,25 @@ def send_tariff(contract_id):
     """Send tariff for a Contract to CMS and add rule"""
 
     # Load Contract doc
-    doc = frappe.get_doc("Contract", contract_id)
+    doc = frappe.get_doc("EV Charging Contract", contract_id)
 
     # Load settings from DocuSign Settings doctype
     # docusign_settings = frappe.get_single("DocuSign Settings")
     docusign_settings = frappe.get_cached_doc('DocuSign Settings', 'DocuSign Settings')
 
     base_url = docusign_settings.cms_base_url.rstrip("/")
+    api_key = docusign_settings.cms_api_key  
     headers = {
         "Content-Type": "application/json",
-        "Accept": "application/json"
+        "Accept": "application/json",
+        "x-api-key": api_key,           # <<— the header your API expects
     }
 
     # -----------------------------
     # 1️⃣ Create new tariff
     # -----------------------------
     tariff_payload = {
-        "name": f"{doc.contract_title}-tariff_001",
+        "name": f"{doc.contract_title}-tariff",
         "taxId": docusign_settings.taxid,
         "services": [
             {
@@ -846,7 +855,7 @@ def send_tariff(contract_id):
         "numotype": "ocpp"
     }
 
-    create_url = f"{base_url}/tariff/api/tariff"
+    create_url = f"{base_url}/frapeetariff/api/tariff"
     create_resp = requests.post(create_url, json=tariff_payload, headers=headers)
 
     if create_resp.status_code != 200:
@@ -864,7 +873,7 @@ def send_tariff(contract_id):
     # -----------------------------
     # 2️⃣ Get existing rules
     # -----------------------------
-    rules_url = f"{base_url}/tariff/api/tariff_rules"
+    rules_url = f"{base_url}/frapeetariff/api/tariff_rules"
     params = {"numotype": "ocpp"}
 
     rules_resp = requests.get(rules_url, params=params, headers=headers)
@@ -909,7 +918,7 @@ def send_tariff(contract_id):
     }
 
     # 4️⃣ Push updated rules back
-    push_url = f"{base_url}/tariff/api/tariff_rules"
+    push_url = f"{base_url}/frapeetariff/api/tariff_rules"
     frappe.log_error(f"Posting updated rules to {push_url}", "send_tariff")
     push_resp = requests.post(push_url, json=final_payload, headers=headers)
     frappe.log_error(f"Rules POST response code={push_resp.status_code}, body={push_resp.text}", "send_tariff")
@@ -917,4 +926,18 @@ def send_tariff(contract_id):
     if push_resp.status_code != 200:
         frappe.log_error(push_resp.text, "Push Rules Failed")
         frappe.throw(f"Error posting updated rules: {push_resp.text}")
+    else:
+    # success case
+        # suppress automatic form merge/refresh
+         # Save to Contract
+        doc.has_tariff_published_to_cms = True
+        doc.save(ignore_permissions=True)
+        frappe.response["message"] = None  # 👈 clear message so client gets null
+        # you can still send status info separately:
+        frappe.response["status"] = "success"
+        frappe.response["tariff_id"] = tariff_id
+        frappe.response["rules_identifier"] = identifier
+        return  # nothing returned, nothing merged
+
+
 

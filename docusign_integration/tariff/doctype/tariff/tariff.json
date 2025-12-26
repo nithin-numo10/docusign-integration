@@ -1,0 +1,109 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-12-19 12:35:54.238439",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "title_field": "tariff_name",
+ "show_title_field_in_link": 1,
+ "field_order": [
+  "tariff_name",
+  "type",
+  "currency",
+  "value",
+  "service_fee",
+  "tax",
+  "status"
+ ],
+ "fields": [
+  {
+   "fieldname": "tariff_name",
+   "fieldtype": "Data",
+   "label": "Name",
+   "reqd": 1,
+   "in_list_view": 1
+  },{
+    "fieldname": "type",
+    "fieldtype": "Select",
+    "label": "Type",
+    "reqd": 1,
+    "options": "\nEnergy\nDuration"
+  },
+  {
+    "fieldname": "currency",
+    "fieldtype": "Data",
+    "label": "Currency",
+    "reqd": 1
+  },
+  {
+    "fieldname": "value",
+    "fieldtype": "Float",
+    "label": "Value",
+    "reqd": 1
+  },
+  {
+    "fieldname": "service_fee",
+    "fieldtype": "Currency",
+    "label": "Service Fee"
+  },
+  {
+    "fieldname": "tax",
+    "label": "Tax",
+    "fieldtype": "Select",
+    "reqd": 1
+  },
+  {
+    "fieldname": "tax_identifier",
+    "label": "Tax Identifier",
+    "fieldtype": "Data",
+    "read_only": 1
+  }, 
+  {
+    "fieldname": "status",
+    "fieldtype": "Select",
+    "label": "Status",
+    "options": "\nDraft\nUnder Review\nApproved\nActive\nRejected",
+    "default": "Draft"
+  },
+  {
+    "fieldname": "pushed_to_cms",
+    "label": "Pushed to CMS",
+    "fieldtype": "Check",
+    "read_only": 1,
+    "default": 0
+  },
+  {
+    "fieldname": "cms_tariff_id",
+    "label": "CMS Tariff ID",
+    "fieldtype": "Data",
+    "read_only": 1,
+    "hidden": 1
+  }    
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-12-19 12:36:44.237837",
+ "modified_by": "Administrator",
+ "module": "Tariff",
+ "name": "Tariff",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

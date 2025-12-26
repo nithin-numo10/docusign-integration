@@ -1,0 +1,1145 @@
+[
+ {
+  "completed_by": null,
+  "completed_by_role": null,
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-24 12:49:57.241884",
+  "name": "i94kn6f7gi",
+  "permitted_roles": [
+   {
+    "parent": "i94kn6f7gi",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Requester"
+   }
+  ],
+  "reference_doctype": "Assign Tariff",
+  "reference_name": "i93m066cqc",
+  "status": "Open",
+  "user": null,
+  "workflow_state": "Draft"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Requester",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-24 15:15:01.526164",
+  "name": "797c9vbbc2",
+  "permitted_roles": [
+   {
+    "parent": "797c9vbbc2",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Requester"
+   }
+  ],
+  "reference_doctype": "Tariff",
+  "reference_name": "7965gsgima",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Draft"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Approver",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-24 15:15:04.049403",
+  "name": "7a01q9vft8",
+  "permitted_roles": [
+   {
+    "parent": "7a01q9vft8",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Requester"
+   },
+   {
+    "parent": "7a01q9vft8",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Approver"
+   }
+  ],
+  "reference_doctype": "Tariff",
+  "reference_name": "7965gsgima",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Under Review"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Requester",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-24 15:15:05.707620",
+  "name": "7ah6cf0qal",
+  "permitted_roles": [
+   {
+    "parent": "7ah6cf0qal",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Requester"
+   }
+  ],
+  "reference_doctype": "Tariff",
+  "reference_name": "7965gsgima",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Approved"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Requester",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-24 15:21:04.695774",
+  "name": "aqnmkmhqjf",
+  "permitted_roles": [
+   {
+    "parent": "aqnmkmhqjf",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Requester"
+   }
+  ],
+  "reference_doctype": "Assign Tariff",
+  "reference_name": "aqmel6sa1l",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Draft"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Approver",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-24 15:21:09.124759",
+  "name": "as3vl286s2",
+  "permitted_roles": [
+   {
+    "parent": "as3vl286s2",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Approver"
+   }
+  ],
+  "reference_doctype": "Assign Tariff",
+  "reference_name": "aqmel6sa1l",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Under Review"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Requester",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-24 15:21:11.747751",
+  "name": "astmdm84ob",
+  "permitted_roles": [
+   {
+    "parent": "astmdm84ob",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Requester"
+   }
+  ],
+  "reference_doctype": "Assign Tariff",
+  "reference_name": "aqmel6sa1l",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Approved"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Requester",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-24 15:24:11.494547",
+  "name": "cl2hiooe1i",
+  "permitted_roles": [
+   {
+    "parent": "cl2hiooe1i",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Requester"
+   }
+  ],
+  "reference_doctype": "Assign Tariff",
+  "reference_name": "cl288j96ab",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Draft"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Approver",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-24 15:24:13.978392",
+  "name": "clrqoi2q5v",
+  "permitted_roles": [
+   {
+    "parent": "clrqoi2q5v",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Approver"
+   }
+  ],
+  "reference_doctype": "Assign Tariff",
+  "reference_name": "cl288j96ab",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Under Review"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Requester",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-24 15:24:16.354742",
+  "name": "cmj6pj4a5b",
+  "permitted_roles": [
+   {
+    "parent": "cmj6pj4a5b",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Requester"
+   }
+  ],
+  "reference_doctype": "Assign Tariff",
+  "reference_name": "cl288j96ab",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Approved"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Requester",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-24 15:25:12.973619",
+  "name": "d89g1eubrv",
+  "permitted_roles": [
+   {
+    "parent": "d89g1eubrv",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Requester"
+   }
+  ],
+  "reference_doctype": "Assign Tariff",
+  "reference_name": "d89o7t35aq",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Draft"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Approver",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-24 15:25:16.011057",
+  "name": "d98j24j8vm",
+  "permitted_roles": [
+   {
+    "parent": "d98j24j8vm",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Approver"
+   }
+  ],
+  "reference_doctype": "Assign Tariff",
+  "reference_name": "d89o7t35aq",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Under Review"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Requester",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-24 15:25:18.075761",
+  "name": "d9s37ac5v9",
+  "permitted_roles": [
+   {
+    "parent": "d9s37ac5v9",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Requester"
+   }
+  ],
+  "reference_doctype": "Assign Tariff",
+  "reference_name": "d89o7t35aq",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Approved"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Requester",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-24 15:27:40.188169",
+  "name": "em9de1m9fb",
+  "permitted_roles": [
+   {
+    "parent": "em9de1m9fb",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Requester"
+   }
+  ],
+  "reference_doctype": "Assign Tariff",
+  "reference_name": "em9866qocn",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Draft"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Approver",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-24 15:27:43.164776",
+  "name": "en76vi4pc3",
+  "permitted_roles": [
+   {
+    "parent": "en76vi4pc3",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Approver"
+   }
+  ],
+  "reference_doctype": "Assign Tariff",
+  "reference_name": "em9866qocn",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Under Review"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Requester",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-24 15:27:45.684373",
+  "name": "eo0eetguah",
+  "permitted_roles": [
+   {
+    "parent": "eo0eetguah",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Requester"
+   }
+  ],
+  "reference_doctype": "Assign Tariff",
+  "reference_name": "em9866qocn",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Approved"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Requester",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-24 15:34:46.007489",
+  "name": "irci1ra6nb",
+  "permitted_roles": [
+   {
+    "parent": "irci1ra6nb",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Requester"
+   }
+  ],
+  "reference_doctype": "Assign Tariff",
+  "reference_name": "irbb9ihosn",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Draft"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Approver",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-24 15:34:55.502149",
+  "name": "iub1e0ldrp",
+  "permitted_roles": [
+   {
+    "parent": "iub1e0ldrp",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Approver"
+   }
+  ],
+  "reference_doctype": "Assign Tariff",
+  "reference_name": "irbb9ihosn",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Under Review"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Requester",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-24 15:34:57.396698",
+  "name": "iuu3g05psj",
+  "permitted_roles": [
+   {
+    "parent": "iuu3g05psj",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Requester"
+   }
+  ],
+  "reference_doctype": "Assign Tariff",
+  "reference_name": "irbb9ihosn",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Approved"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Requester",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-24 15:41:09.674895",
+  "name": "mj8p86561q",
+  "permitted_roles": [
+   {
+    "parent": "mj8p86561q",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Requester"
+   }
+  ],
+  "reference_doctype": "Assign Tariff",
+  "reference_name": "mj84tv3dnr",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Draft"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Approver",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-24 15:41:11.959276",
+  "name": "mjv4423qjh",
+  "permitted_roles": [
+   {
+    "parent": "mjv4423qjh",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Approver"
+   }
+  ],
+  "reference_doctype": "Assign Tariff",
+  "reference_name": "mj84tv3dnr",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Under Review"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Requester",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-24 15:41:13.538011",
+  "name": "mkfliuhofr",
+  "permitted_roles": [
+   {
+    "parent": "mkfliuhofr",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Requester"
+   }
+  ],
+  "reference_doctype": "Assign Tariff",
+  "reference_name": "mj84tv3dnr",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Approved"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Requester",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-24 15:43:58.146066",
+  "name": "o7tvd3in9i",
+  "permitted_roles": [
+   {
+    "parent": "o7tvd3in9i",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Requester"
+   }
+  ],
+  "reference_doctype": "Assign Tariff",
+  "reference_name": "o7sej2uqo0",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Draft"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Approver",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-24 15:44:01.763967",
+  "name": "o91chnhvs3",
+  "permitted_roles": [
+   {
+    "parent": "o91chnhvs3",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Approver"
+   }
+  ],
+  "reference_doctype": "Assign Tariff",
+  "reference_name": "o7sej2uqo0",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Under Review"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Requester",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-24 15:44:03.487011",
+  "name": "o9isd2sbnn",
+  "permitted_roles": [
+   {
+    "parent": "o9isd2sbnn",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Requester"
+   }
+  ],
+  "reference_doctype": "Assign Tariff",
+  "reference_name": "o7sej2uqo0",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Approved"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Requester",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-24 15:45:17.372852",
+  "name": "p0lqqiqvg5",
+  "permitted_roles": [
+   {
+    "parent": "p0lqqiqvg5",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Requester"
+   }
+  ],
+  "reference_doctype": "Assign Tariff",
+  "reference_name": "p0kdtr4fts",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Draft"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Approver",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-24 15:45:20.189493",
+  "name": "p1hfv42nnp",
+  "permitted_roles": [
+   {
+    "parent": "p1hfv42nnp",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Approver"
+   }
+  ],
+  "reference_doctype": "Assign Tariff",
+  "reference_name": "p0kdtr4fts",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Under Review"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Requester",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-24 16:17:06.313072",
+  "name": "bl76rfqn3t",
+  "permitted_roles": [
+   {
+    "parent": "bl76rfqn3t",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Requester"
+   }
+  ],
+  "reference_doctype": "Assign Tariff",
+  "reference_name": "p0kdtr4fts",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Approved"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Requester",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-24 16:18:10.159143",
+  "name": "c95dcfk6oq",
+  "permitted_roles": [
+   {
+    "parent": "c95dcfk6oq",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Requester"
+   }
+  ],
+  "reference_doctype": "Assign Tariff",
+  "reference_name": "c95b06db1g",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Draft"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Approver",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-24 16:18:11.876709",
+  "name": "c9mg4sb7oc",
+  "permitted_roles": [
+   {
+    "parent": "c9mg4sb7oc",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Approver"
+   }
+  ],
+  "reference_doctype": "Assign Tariff",
+  "reference_name": "c95b06db1g",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Under Review"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Requester",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-24 16:18:14.883333",
+  "name": "cakci298j9",
+  "permitted_roles": [
+   {
+    "parent": "cakci298j9",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Requester"
+   }
+  ],
+  "reference_doctype": "Assign Tariff",
+  "reference_name": "c95b06db1g",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Approved"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Requester",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-24 16:21:55.855865",
+  "name": "efmfoe2bs4",
+  "permitted_roles": [
+   {
+    "parent": "efmfoe2bs4",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Requester"
+   }
+  ],
+  "reference_doctype": "Assign Tariff",
+  "reference_name": "efms9n7c0d",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Draft"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Approver",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-24 16:21:59.034441",
+  "name": "egmrkota7p",
+  "permitted_roles": [
+   {
+    "parent": "egmrkota7p",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Approver"
+   }
+  ],
+  "reference_doctype": "Assign Tariff",
+  "reference_name": "efms9n7c0d",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Under Review"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Requester",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-24 16:22:01.436766",
+  "name": "eheto6il50",
+  "permitted_roles": [
+   {
+    "parent": "eheto6il50",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Requester"
+   }
+  ],
+  "reference_doctype": "Assign Tariff",
+  "reference_name": "efms9n7c0d",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Approved"
+ },
+ {
+  "completed_by": null,
+  "completed_by_role": null,
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-23 15:21:53.438360",
+  "name": "vhui37p0l2",
+  "permitted_roles": [
+   {
+    "parent": "vhui37p0l2",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Requester"
+   }
+  ],
+  "reference_doctype": "Assign Tariff",
+  "reference_name": "vhu9mhap0b",
+  "status": "Open",
+  "user": null,
+  "workflow_state": "Draft"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Requester",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-23 17:35:08.657616",
+  "name": "dkeit7rbt3",
+  "permitted_roles": [
+   {
+    "parent": "dkeit7rbt3",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Requester"
+   }
+  ],
+  "reference_doctype": "Tariff",
+  "reference_name": "dkei4r39he",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Draft"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Approver",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-23 17:35:14.514616",
+  "name": "dm9bq65848",
+  "permitted_roles": [
+   {
+    "parent": "dm9bq65848",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Approver"
+   },
+   {
+    "parent": "dm9bq65848",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Requester"
+   }
+  ],
+  "reference_doctype": "Tariff",
+  "reference_name": "dkei4r39he",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Under Review"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Requester",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-23 17:35:17.863995",
+  "name": "dna5at0crf",
+  "permitted_roles": [
+   {
+    "parent": "dna5at0crf",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Requester"
+   }
+  ],
+  "reference_doctype": "Tariff",
+  "reference_name": "dkei4r39he",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Approved"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Requester",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-23 12:31:32.510675",
+  "name": "rnth2fo58d",
+  "permitted_roles": [
+   {
+    "parent": "rnth2fo58d",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Requester"
+   }
+  ],
+  "reference_doctype": "Tariff",
+  "reference_name": "rnspuqbet1",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Draft"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Approver",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-23 12:31:52.776193",
+  "name": "ru7gae07m4",
+  "permitted_roles": [
+   {
+    "parent": "ru7gae07m4",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Approver"
+   },
+   {
+    "parent": "ru7gae07m4",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Requester"
+   }
+  ],
+  "reference_doctype": "Tariff",
+  "reference_name": "rnspuqbet1",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Under Review"
+ },
+ {
+  "completed_by": null,
+  "completed_by_role": null,
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-23 12:31:56.400807",
+  "name": "rvcip7hge3",
+  "permitted_roles": [
+   {
+    "parent": "rvcip7hge3",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Requester"
+   }
+  ],
+  "reference_doctype": "Tariff",
+  "reference_name": "rnspuqbet1",
+  "status": "Open",
+  "user": null,
+  "workflow_state": "Approved"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Requester",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-23 12:35:33.692744",
+  "name": "u382pll9ge",
+  "permitted_roles": [
+   {
+    "parent": "u382pll9ge",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Requester"
+   }
+  ],
+  "reference_doctype": "Tariff",
+  "reference_name": "u38ba6be8v",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Draft"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Approver",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-23 12:35:36.431121",
+  "name": "u44tgkosb3",
+  "permitted_roles": [
+   {
+    "parent": "u44tgkosb3",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Approver"
+   },
+   {
+    "parent": "u44tgkosb3",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Requester"
+   }
+  ],
+  "reference_doctype": "Tariff",
+  "reference_name": "u38ba6be8v",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Under Review"
+ },
+ {
+  "completed_by": null,
+  "completed_by_role": null,
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-23 12:35:45.615750",
+  "name": "u70autvgig",
+  "permitted_roles": [
+   {
+    "parent": "u70autvgig",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Requester"
+   }
+  ],
+  "reference_doctype": "Tariff",
+  "reference_name": "u38ba6be8v",
+  "status": "Open",
+  "user": null,
+  "workflow_state": "Approved"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Requester",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-23 12:55:21.215117",
+  "name": "9mcslg573n",
+  "permitted_roles": [
+   {
+    "parent": "9mcslg573n",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Requester"
+   }
+  ],
+  "reference_doctype": "Tariff",
+  "reference_name": "9mbcqrq6jg",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Draft"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Approver",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-23 12:55:22.936137",
+  "name": "9mt4kcp73q",
+  "permitted_roles": [
+   {
+    "parent": "9mt4kcp73q",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Approver"
+   },
+   {
+    "parent": "9mt4kcp73q",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Requester"
+   }
+  ],
+  "reference_doctype": "Tariff",
+  "reference_name": "9mbcqrq6jg",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Under Review"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Requester",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-23 12:55:25.196005",
+  "name": "9njjbes2mj",
+  "permitted_roles": [
+   {
+    "parent": "9njjbes2mj",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Requester"
+   }
+  ],
+  "reference_doctype": "Tariff",
+  "reference_name": "9mbcqrq6jg",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Approved"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Requester",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-24 16:24:37.165932",
+  "name": "g23osa08ae",
+  "permitted_roles": [
+   {
+    "parent": "g23osa08ae",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Requester"
+   }
+  ],
+  "reference_doctype": "Assign Tariff",
+  "reference_name": "g22sc9lq7j",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Draft"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Approver",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-24 16:24:39.158440",
+  "name": "g2n774tcu2",
+  "permitted_roles": [
+   {
+    "parent": "g2n774tcu2",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Approver"
+   }
+  ],
+  "reference_doctype": "Assign Tariff",
+  "reference_name": "g22sc9lq7j",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Under Review"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Requester",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-24 16:25:06.983840",
+  "name": "gbdgn17ms9",
+  "permitted_roles": [
+   {
+    "parent": "gbdgn17ms9",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Requester"
+   }
+  ],
+  "reference_doctype": "Assign Tariff",
+  "reference_name": "g22sc9lq7j",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Approved"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Requester",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-24 16:28:54.072237",
+  "name": "iicfgoqgd5",
+  "permitted_roles": [
+   {
+    "parent": "iicfgoqgd5",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Requester"
+   }
+  ],
+  "reference_doctype": "Assign Tariff",
+  "reference_name": "iibulsobqh",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Draft"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Tariff Approver",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-24 16:28:57.553553",
+  "name": "ijfcupotou",
+  "permitted_roles": [
+   {
+    "parent": "ijfcupotou",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Approver"
+   }
+  ],
+  "reference_doctype": "Assign Tariff",
+  "reference_name": "iibulsobqh",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Under Review"
+ },
+ {
+  "completed_by": null,
+  "completed_by_role": null,
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2025-12-24 16:28:59.849028",
+  "name": "ik601cea2f",
+  "permitted_roles": [
+   {
+    "parent": "ik601cea2f",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Tariff Requester"
+   }
+  ],
+  "reference_doctype": "Assign Tariff",
+  "reference_name": "iibulsobqh",
+  "status": "Open",
+  "user": null,
+  "workflow_state": "Approved"
+ }
+]

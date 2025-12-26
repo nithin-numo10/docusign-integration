@@ -5,6 +5,50 @@ app_description = "Digital Signature"
 app_email = "nithin.m@numocity.com"
 app_license = "mit"
 
+fixtures = [
+    # 🔹 Roles
+    {
+        "dt": "Role",
+        "filters": [
+            [
+                "name",
+                "in",
+                [
+                    "Tariff Requester",
+                    "Tariff Approver",
+                    "Tariff Admin"
+                ]
+            ]
+        ]
+    },
+
+    # 🔹 Workflow 1: Tariff
+    {
+        "dt": "Workflow",
+        "filters": [
+            ["name", "in", [
+                "Tariff Approval",
+                "Tariff Assignment Approval"
+            ]]
+        ]
+    },
+
+    # 🔹 Workflow States (shared safely)
+    {
+        "dt": "Workflow State",
+        "filters": []
+    },
+
+    # 🔹 Workflow Actions (shared safely)
+    {
+        "dt": "Workflow Action",
+        "filters": []
+    }
+]
+
+
+
+
 # Apps
 # ------------------
 

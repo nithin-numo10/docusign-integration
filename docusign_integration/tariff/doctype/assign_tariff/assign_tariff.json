@@ -1,0 +1,74 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-12-19 12:45:05.617600",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "tariff"
+ ],
+ "fields": [
+  {
+    "fieldname": "charge_point",
+    "label": "Charge Point",
+    "fieldtype": "Select",
+    "reqd": 1
+  },
+  {
+    "fieldname": "charge_point_name",
+    "label": "Charge Point Name",
+    "fieldtype": "Data",
+    "read_only": 1,
+    "hidden": 0
+  },
+  {
+    "fieldname": "connectors",
+    "label": "Connectors",
+    "fieldtype": "Table",
+    "options": "Assign Tariff Connector",
+    "cannot_add_rows": 1,
+    "cannot_delete_rows": 1,
+    "cannot_delete_all_rows": 1
+     },
+  {
+    "fieldname": "status",
+    "label": "Status",
+    "fieldtype": "Select",
+    "options": "\nDraft\nUnder Review\nApproved\nActive\nRejected",
+    "default": "Draft"
+  },
+  {
+    "fieldname": "pushed_to_cms",
+    "label": "Pushed to CMS",
+    "fieldtype": "Check",
+    "read_only": 1,
+    "default": 0
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-12-19 12:45:26.795132",
+ "modified_by": "Administrator",
+ "module": "Tariff",
+ "name": "Assign Tariff",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,6 +1,7 @@
 # your_doctype.py
 import frappe
 import requests
+import json
 
 @frappe.whitelist()
 def fetch_chargepoint_list():
@@ -123,7 +124,7 @@ def push_tariff_to_cms(tariff_doc):
                 # Extract the identifier from CMS response
         frappe.log_error(
             title="Tariff CMS push response",
-            message=resp.json()
+            message=json.dumps(resp.json(), indent=2)
         )        
         cms_id = resp.json().get("identifier")
 

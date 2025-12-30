@@ -6,6 +6,7 @@
  "engine": "InnoDB",
  "title_field": "tariff_name",
  "show_title_field_in_link": 1,
+ "is_submittable": 1,
  "field_order": [
   "tariff_name",
   "type",
@@ -97,6 +98,7 @@
    "print": 1,
    "read": 1,
    "report": 1,
+   "submit": 1,
    "role": "System Manager",
    "share": 1,
    "write": 1

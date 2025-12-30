@@ -121,6 +121,10 @@ def push_tariff_to_cms(tariff_doc):
         resp = requests.post(url, json=payload, headers=headers, timeout=15)
         resp.raise_for_status()
                 # Extract the identifier from CMS response
+        frappe.log_error(
+            title="Tariff CMS push response",
+            message=resp.json()
+        )        
         cms_id = resp.json().get("identifier")
 
         if cms_id:
